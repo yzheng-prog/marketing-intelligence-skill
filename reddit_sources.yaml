@@ -1,0 +1,140 @@
+# Reddit Sources
+# Curated for discussion quality, not size.
+# High comment-to-upvote ratio communities are prioritized over large passive ones.
+#
+# To add a subreddit: copy any entry format below and add your own.
+# To disable a subreddit without deleting it: set enabled: false
+
+subreddits:
+
+  # ── Core Marketing Practice ──────────────────────────────────────────────
+
+  - name: marketing
+    url: https://reddit.com/r/marketing
+    focus: General marketing strategy, campaigns, career discussions
+    signal_quality: medium-high
+    notes: Large community, filter aggressively for substantive threads. Best threads are "I tried X, here's what happened" posts.
+    enabled: true
+
+  - name: digital_marketing
+    url: https://reddit.com/r/digital_marketing
+    focus: Paid ads, SEO, email, social — practitioner-level discussion
+    signal_quality: high
+    notes: Smaller than r/marketing but higher practitioner density. Good for tactical pain points.
+    enabled: true
+
+  - name: content_marketing
+    url: https://reddit.com/r/content_marketing
+    focus: Content strategy, SEO content, editorial, distribution
+    signal_quality: medium
+    notes: Moderate activity. Most valuable posts are about distribution struggles and what's actually working.
+    enabled: true
+
+  # ── Growth and Product ────────────────────────────────────────────────────
+
+  - name: GrowthHacking
+    url: https://reddit.com/r/GrowthHacking
+    focus: Growth experiments, acquisition channels, retention tactics
+    signal_quality: medium-high
+    notes: Mix of practitioners and beginners. Filter for posts with >20 comments. Case studies are gold here.
+    enabled: true
+
+  - name: startups
+    url: https://reddit.com/r/startups
+    focus: Early-stage marketing, GTM strategy, customer acquisition
+    signal_quality: high
+    notes: Founders talking openly about what's working and failing. High candor. Not just marketing but highly relevant.
+    enabled: true
+
+  - name: SaaS
+    url: https://reddit.com/r/SaaS
+    focus: B2B SaaS marketing, positioning, pricing, PLG
+    signal_quality: high
+    notes: Very good for B2B marketing signal. Founders share real numbers more freely than on LinkedIn.
+    enabled: true
+
+  # ── SEO and Search ────────────────────────────────────────────────────────
+
+  - name: SEO
+    url: https://reddit.com/r/SEO
+    focus: Search strategy, algorithm changes, content optimization, GEO
+    signal_quality: high
+    notes: Active practitioners. Algorithm update threads are particularly valuable — real traffic data shared openly.
+    enabled: true
+
+  - name: bigseo
+    url: https://reddit.com/r/bigseo
+    focus: Enterprise SEO, technical SEO, advanced strategy
+    signal_quality: very high
+    notes: Smaller but highly experienced community. Less noise. When something appears here it usually matters.
+    enabled: true
+
+  # ── Social Media and Community ────────────────────────────────────────────
+
+  - name: socialmedia
+    url: https://reddit.com/r/socialmedia
+    focus: Platform strategy, organic reach, social algorithm changes
+    signal_quality: medium
+    notes: Useful for tracking platform-specific frustrations and shifts. Organic reach complaints are a reliable signal.
+    enabled: true
+
+  - name: LinkedInLunatics
+    url: https://reddit.com/r/LinkedInLunatics
+    focus: Meta-commentary on LinkedIn culture and trends
+    signal_quality: medium
+    notes: Unusual source but reveals what LinkedIn content patterns are being mocked — which is itself a signal about what's oversaturated.
+    enabled: true
+
+  # ── B2B and Sales ─────────────────────────────────────────────────────────
+
+  - name: b2b
+    url: https://reddit.com/r/b2b
+    focus: B2B marketing, demand gen, sales-marketing alignment
+    signal_quality: medium
+    notes: Smaller community but focused. Good for ABM and demand gen pain points.
+    enabled: true
+
+  - name: sales
+    url: https://reddit.com/r/sales
+    focus: Sales perspective on marketing quality, outbound, pipeline
+    signal_quality: high
+    notes: Sales people are brutally honest about what marketing produces. Crossing into this community gives the other side of demand gen debates.
+    enabled: true
+
+  # ── Specific High-Signal Topics ───────────────────────────────────────────
+
+  - name: PPC
+    url: https://reddit.com/r/PPC
+    focus: Paid search, paid social, performance marketing
+    signal_quality: high
+    notes: Very active practitioners. Platform changes (Google Ads, Meta) discussed immediately and honestly.
+    enabled: true
+
+  - name: emailmarketing
+    url: https://reddit.com/r/emailmarketing
+    focus: Email strategy, deliverability, automation, newsletters
+    signal_quality: medium-high
+    notes: Deliverability discussions are especially valuable — real practitioners sharing real numbers.
+    enabled: true
+
+  - name: Entrepreneur
+    url: https://reddit.com/r/Entrepreneur
+    focus: Business owners' perspective on marketing spend and ROI
+    signal_quality: medium
+    notes: Good for understanding how non-marketers perceive marketing value. Often reveals frustrations that marketing teams don't hear directly.
+    enabled: true
+
+# ── Search Strategy ──────────────────────────────────────────────────────────
+#
+# When searching within subreddits, prioritize these post types:
+#
+#   1. "I tried X for [time period], here are my results" — direct experience
+#   2. "Is [tactic] still working in [year]?" — captures real sentiment shift
+#   3. "Why is [thing] not working anymore?" — pain point signal
+#   4. Posts where top comment contradicts the post — indicates live debate
+#   5. Posts with >50 comments and <500 upvotes — high engagement relative to reach
+#
+# Avoid:
+#   - Self-promotion posts (even if high upvotes)
+#   - "What tools do you use?" threads (tool lists, low insight)
+#   - Posts from accounts with clear vendor affiliation

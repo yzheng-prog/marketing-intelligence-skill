@@ -1,0 +1,127 @@
+# Marketing Intelligence Skill — Configuration
+#
+# Edit this file to customize the skill for your needs.
+# Lines starting with # are comments and are ignored.
+#
+# After editing, tell Claude: "Run weekly marketing report"
+# Claude will use these settings when generating the report.
+
+# ── Report Settings ───────────────────────────────────────────────────────────
+
+report:
+  # How many days back to look for content
+  # Default: 7 (one week rolling window)
+  window_days: 7
+
+  # Output language options
+  # "en" = English only
+  # "zh" = Chinese only
+  # "both" = English + Chinese (default)
+  language: both
+
+  # Which Chinese variant to produce when language is "both" or "zh"
+  # "A" = Pure Chinese expression (same content, rewritten in Chinese)
+  # "B" = China/Global lens (adds China market relevance notes)
+  # "both" = Produce both variants
+  chinese_variant: both
+
+  # Report format
+  # "md" = Markdown (default, works everywhere)
+  # "docx" = Word document
+  output_format: md
+
+
+# ── Signal Thresholds ─────────────────────────────────────────────────────────
+
+signals:
+  # Minimum number of comments for a Reddit thread to be considered
+  min_comments: 15
+
+  # Minimum upvotes for a Reddit thread to be considered
+  min_upvotes: 20
+
+  # How many Strong Signals to aim for per report
+  # (Claude will use judgment — this is a target, not a hard limit)
+  strong_signal_target: 3
+
+  # How many Emerging Signals to aim for per report
+  emerging_signal_target: 5
+
+
+# ── Topic Focus ───────────────────────────────────────────────────────────────
+
+topics:
+  # Add or remove topics to focus on.
+  # Claude will prioritize Reddit threads and articles that touch these areas.
+  # Leave this list broad — narrowing too much reduces signal diversity.
+
+  focus_areas:
+    - B2B marketing
+    - content strategy
+    - SEO and search
+    - growth marketing
+    - demand generation
+    - social media strategy
+    - email marketing
+    - AI in marketing
+    - brand positioning
+    - go-to-market strategy
+
+  # Topics to explicitly de-prioritize
+  # (Claude will still include them if they're strong signals, but won't seek them out)
+  deprioritize:
+    - influencer marketing (consumer)
+    - e-commerce (unless B2B angle)
+    - crypto / web3 marketing
+
+
+# ── Source Customization ──────────────────────────────────────────────────────
+
+sources:
+  # Override which source files to use
+  # Default: uses sources/reddit_sources.yaml and sources/rss_sources.yaml
+  reddit_sources_file: sources/reddit_sources.yaml
+  rss_sources_file: sources/rss_sources.yaml
+
+  # Whether to include LinkedIn content
+  # Note: LinkedIn has no open API. This relies on Claude's web search
+  # to find publicly shared LinkedIn posts. Coverage will be limited.
+  include_linkedin: true
+
+  # Whether to include Hacker News
+  # HN has an open API and sometimes surfaces high-quality marketing discussions
+  include_hacker_news: true
+
+
+# ── Output Settings ───────────────────────────────────────────────────────────
+
+output:
+  # Where to save reports (relative to repo root)
+  output_directory: outputs/
+
+  # File naming convention
+  # Available variables: {date} = YYYY-MM-DD, {week} = week number
+  filename_en: "Marketing_Intelligence_EN_{date}"
+  filename_zh_a: "Marketing_Intelligence_ZH_A_{date}"
+  filename_zh_b: "Marketing_Intelligence_ZH_B_{date}"
+
+
+# ── Advanced ──────────────────────────────────────────────────────────────────
+
+advanced:
+  # Whether Claude should explicitly compare this week's signals
+  # to what it knows about previous weeks (requires memory or prior reports)
+  track_signal_continuity: true
+
+  # Whether to include a "Fading Signals" section
+  # (topics that were active recently but are cooling)
+  include_fading_signals: true
+
+  # Whether to include the Raw Material section in the report
+  # (full Reddit thread analyses and article analyses as evidence base)
+  # Set to false for a shorter, cleaner report
+  include_raw_material: true
+
+  # Transparency label enforcement
+  # Do not set to false — this is the integrity mechanism of the skill
+  require_transparency_labels: true

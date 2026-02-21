@@ -1,0 +1,191 @@
+# RSS and Newsletter Sources
+#
+# Organized by tier. Tier 1 sources are checked every run.
+# Tier 2 are checked every run but weighted lower.
+# Tier 3 are supplementary — included when they publish something relevant.
+#
+# To add a source: copy any entry and fill in the fields.
+# To disable: set enabled: false
+# RSS feeds can be validated at: https://validator.w3.org/feed/
+
+sources:
+
+  # ════════════════════════════════════════════════════════════════
+  # TIER 1 — Independent Practitioners and Newsletter Authors
+  # These people write from direct experience. Logic-chain density
+  # is high. These are the sources most likely to explain *why*.
+  # ════════════════════════════════════════════════════════════════
+
+  - name: Lenny's Newsletter
+    author: Lenny Rachitsky
+    rss: https://www.lennysnewsletter.com/feed
+    focus: Product growth, PLG, B2B SaaS, retention, pricing
+    why_included: Ex-Airbnb PM. Writes mechanism-level explanations with real operator data. Heavily cited in Reddit growth discussions.
+    tier: 1
+    enabled: true
+
+  - name: Exit Five (Dave Gerhardt)
+    author: Dave Gerhardt
+    rss: https://www.exitfive.com/feed
+    focus: B2B marketing, demand gen, brand building, marketing leadership
+    why_included: Former VP Marketing at Drift. Writes about what actually works in B2B, often contradicts conventional wisdom with direct experience.
+    tier: 1
+    enabled: true
+
+  - name: Marketing Examples
+    author: Harry Dry
+    rss: https://marketingexamples.com/feed.xml
+    focus: Copywriting, positioning, real campaign breakdowns
+    why_included: Deep dives into specific campaigns with the reasoning behind what worked. Excellent for understanding mechanism, not just outcome.
+    tier: 1
+    enabled: true
+
+  - name: The Marketing Millennials
+    author: Daniel Murray
+    rss: https://www.themarketingmillennials.com/feed
+    focus: Modern marketing strategy, brand, community
+    why_included: Practitioner-first. Good signal on what mid-market marketing teams are actually doing.
+    tier: 1
+    enabled: true
+
+  - name: Everyone Hates Marketers
+    author: Louis Grenier
+    rss: https://www.everyonehatesmarketers.com/feed
+    focus: Anti-bullshit marketing, differentiation, positioning
+    why_included: Deliberately contrarian. Good source for signals about what conventional marketing wisdom is failing — which Reddit often confirms.
+    tier: 1
+    enabled: true
+
+  - name: Demand Curve
+    author: Demand Curve Team
+    rss: https://www.demandcurve.com/newsletter/feed
+    focus: Growth tactics, acquisition, conversion, B2B and consumer
+    why_included: Operator-level. Publishes what's working in growth with enough specificity to be actionable.
+    tier: 1
+    enabled: true
+
+  - name: Stacked Marketer
+    author: Stacked Marketer Team
+    rss: https://stackedmarketer.com/feed/
+    focus: Daily signal across paid, SEO, social, content
+    why_included: Good aggregator for platform changes and emerging tactics. Use as breadcrumb source, not deep source.
+    tier: 1
+    enabled: true
+
+  - name: SparkToro Blog
+    author: Rand Fishkin
+    rss: https://sparktoro.com/blog/feed/
+    focus: Audience research, dark social, zero-click search, media trust
+    why_included: Research-backed. Rand publishes original data on how audiences actually discover content. Often contradicts platform-published statistics.
+    tier: 1
+    enabled: true
+
+  # ════════════════════════════════════════════════════════════════
+  # TIER 2 — Industry Media with Editorial Standards
+  # These publish frequently. Filter for long-form analysis pieces.
+  # Skip news items, product announcements, and listicles.
+  # ════════════════════════════════════════════════════════════════
+
+  - name: Content Marketing Institute
+    author: CMI Editorial
+    rss: https://contentmarketinginstitute.com/feed/
+    focus: Content strategy, editorial, B2B content marketing
+    why_included: Publishes research-backed annual reports and practitioner case studies. Heavy on B2B content.
+    tier: 2
+    enabled: true
+
+  - name: Search Engine Journal
+    author: SEJ Editorial
+    rss: https://www.searchenginejournal.com/feed/
+    focus: SEO, PPC, social media marketing
+    why_included: Fast on algorithm changes. Filter for analysis pieces, skip news.
+    tier: 2
+    enabled: true
+
+  - name: Marketing Week
+    author: Marketing Week Editorial
+    rss: https://www.marketingweek.com/feed/
+    focus: Brand strategy, CMO perspectives, industry trends (UK-weighted)
+    why_included: Good for senior-level strategic framing. UK market provides different perspective from US-dominated discourse.
+    tier: 2
+    enabled: true
+
+  - name: Moz Blog
+    author: Moz Team
+    rss: https://moz.com/blog/feed
+    focus: SEO, search, content optimization
+    why_included: Data-backed SEO analysis. Correlation studies and algorithm impact reports.
+    tier: 2
+    enabled: true
+
+  - name: HubSpot Marketing Blog
+    author: HubSpot Editorial
+    rss: https://blog.hubspot.com/marketing/rss.xml
+    focus: Inbound, email, social, general marketing
+    why_included: Large-scale survey data on marketing benchmarks. Filter aggressively — most content is top-of-funnel lead gen, look for data reports.
+    tier: 2
+    enabled: true
+
+  - name: Animalz Blog
+    author: Animalz Team
+    rss: https://www.animalz.co/blog/feed/
+    focus: Content strategy, SEO content, B2B SaaS content
+    why_included: One of the more intellectually honest content marketing blogs. Willing to publish contrarian takes with reasoning.
+    tier: 2
+    enabled: true
+
+  # ════════════════════════════════════════════════════════════════
+  # TIER 3 — Supplementary Sources
+  # Check when a signal from Tier 1/2 or Reddit needs more context.
+  # Not checked systematically every run.
+  # ════════════════════════════════════════════════════════════════
+
+  - name: a16z Marketing Content
+    author: Andreessen Horowitz
+    rss: https://a16z.com/feed/
+    focus: Go-to-market, SaaS growth, enterprise marketing
+    why_included: VC-level perspective on what GTM models are getting funded and validated. Leading indicator for where B2B marketing is heading.
+    tier: 3
+    enabled: true
+
+  - name: First Round Review
+    author: First Round Capital
+    rss: https://review.firstround.com/feed.xml
+    focus: Deep operator interviews on growth, marketing, GTM
+    why_included: Long-form practitioner interviews. When they publish something marketing-related it's usually worth reading in full.
+    tier: 3
+    enabled: true
+
+  - name: Reforge Blog
+    author: Reforge Team
+    rss: https://www.reforge.com/blog/feed
+    focus: Growth frameworks, retention, engagement, monetization
+    why_included: Framework-level thinking from practitioners. Good for understanding structural patterns behind trends.
+    tier: 3
+    enabled: true
+
+  - name: Backlinko
+    author: Brian Dean
+    rss: https://backlinko.com/feed
+    focus: SEO, link building, content marketing
+    why_included: Data studies with large sample sizes. Useful when a specific SEO claim needs quantitative backing.
+    tier: 3
+    enabled: true
+
+# ── Article Filtering Rules ──────────────────────────────────────────────────
+#
+# When processing articles from the above sources, INCLUDE if:
+#   - Author provides their reasoning, not just a conclusion
+#   - Contains original data, a case study, or firsthand experience
+#   - Contradicts a commonly held belief and explains why
+#   - Published in the last 7 days (within the rolling window)
+#
+# EXCLUDE if:
+#   - It's a listicle ("10 ways to...")
+#   - It's primarily a product or tool promotion
+#   - It's a news item without analysis
+#   - It recycles conventional wisdom without adding new reasoning
+#   - It's a sponsored post (check byline carefully)
+#
+# When in doubt: ask "does this article explain *why* something is happening,
+# or just that it is?" If only the latter, exclude it.
