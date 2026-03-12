@@ -1,0 +1,247 @@
+name: Build Insights (Contentful + Local)
+
+on:
+  # Trigger 1: Manual push of local HTML files (existing behaviour)
+  push:
+    paths:
+      - 'insights/[0-9]**.html'
+    branches:
+      - main
+
+  # Trigger 2: Contentful webhook — fires when you publish in Contentful
+  repository_dispatch:
+    types: [contentful_publish]
+
+  # Trigger 3: Manual run from GitHub Actions UI
+  workflow_dispatch:
+
+jobs:
+  fetch-and-build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── Step 1: Pull articles from Contentful (only on webhook/manual) ──
+      - name: Fetch from Contentful
+        if: github.event_name == 'repository_dispatch' || github.event_name == 'workflow_dispatch'
+        env:
+          CONTENTFUL_SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
+          CONTENTFUL_ACCESS_TOKEN: ${{ secrets.CONTENTFUL_ACCESS_TOKEN }}
+        run: node fetch-contentful.js
+
+      # ── Step 2: Rebuild the insights/index.html from all articles ────────
+      - name: Build insights index
+        run: |
+          python3 << 'PYEOF'
+          import os, re
+
+          insights_dir = 'insights'
+          articles = []
+
+          for filename in sorted(os.listdir(insights_dir), reverse=True):
+              if not filename.endswith('.html'):
+                  continue
+              if not filename[0].isdigit():
+                  continue
+
+              filepath = os.path.join(insights_dir, filename)
+              with open(filepath, 'r', encoding='utf-8') as f:
+                  content = f.read()
+
+              fm = re.search(r'<!--FRONTMATTER(.*?)FRONTMATTER-->', content, re.DOTALL)
+              if not fm:
+                  continue
+
+              fm_text = fm.group(1)
+
+              def get(key):
+                  m = re.search(rf'{key}:\s*"([^"]*)"', fm_text)
+                  return m.group(1) if m else ''
+
+              def get_tags(text):
+                  m = re.search(r'tags:\s*\[(.*?)\]', text)
+                  if not m: return []
+                  return [t.strip().strip('"') for t in m.group(1).split(',')]
+
+              articles.append({
+                  'issue': get('issue'),
+                  'filename': filename,
+                  'title': get('title'),
+                  'summary': get('summary'),
+                  'date': get('date'),
+                  'category': get('category'),
+                  'tags': get_tags(fm_text)
+              })
+
+          TAG_CLASSES = {
+              'GEO': 'tag-geo', 'Paid Media': 'tag-paid', 'B2B': 'tag-b2b',
+              'CPG': 'tag-fmcg', 'FMCG': 'tag-fmcg', 'Analytics': 'tag-analytics',
+              'PMax': 'tag-paid', 'Semrush': 'tag-analytics', 'Strategy': 'tag-strategy',
+              'Cross-industry': 'tag-strategy', 'Performance Marketing': 'tag-paid',
+              'GTM Strategy': 'tag-strategy', 'AI & MarTech': 'tag-geo', 'Brand & CPG': 'tag-fmcg'
+          }
+
+          def make_tags(tags):
+              return ' '.join(
+                  f'<span class="tag {TAG_CLASSES.get(t, "tag-strategy")}">{t}</span>'
+                  for t in tags
+              )
+
+          featured_html = ''
+          grid_html = ''
+
+          for i, art in enumerate(articles):
+              tags_html = make_tags(art['tags'])
+              url = art['filename']
+              issue_padded = art['issue'].zfill(3)
+
+              if i == 0:
+                  featured_html = f'''
+              <a href="{url}" class="article-featured" data-category="{art['category']}">
+                <div class="article-featured-content">
+                  <div class="badge-featured">Latest Insight &middot; Issue #{art['issue']}</div>
+                  <h2>{art['title']}</h2>
+                  <p class="summary">{art['summary']}</p>
+                  <div class="article-meta">
+                    <span class="article-date">{art['date']}</span>
+                    <div class="article-tags">{tags_html}</div>
+                  </div>
+                  <div class="article-read-more">Read full insight <span>&rarr;</span></div>
+                </div>
+                <div class="article-featured-number">{issue_padded}</div>
+              </a>'''
+              else:
+                  grid_html += f'''
+              <a href="{url}" class="article-card" data-category="{art['category']}">
+                <span class="article-card-issue">Issue #{art['issue']} &middot; {art['date']}</span>
+                <h3>{art['title']}</h3>
+                <p class="card-excerpt">{art['summary']}</p>
+                <div class="card-bottom">
+                  <div class="article-tags">{tags_html}</div>
+                  <span class="card-read">Read &rarr;</span>
+                </div>
+              </a>'''
+
+          if not featured_html:
+              featured_html = '<div class="empty-state"><p>First insight coming soon.</p></div>'
+
+          grid_section = f'<div class="articles-grid">{grid_html}</div>' if grid_html else ''
+
+          index_html = f"""<!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Insights &mdash; Ye Zheng | Marketing Intelligence</title>
+            <meta name="description" content="Weekly marketing intelligence grounded in real account data across 120+ clients. Covering GEO optimization, paid media strategy, B2B digital growth, and cross-industry performance marketing.">
+            <meta name="author" content="Ye Zheng">
+            <link rel="icon" type="image/png" href="../favicon-32x32.png">
+            <script type="application/ld+json">
+            {{
+              "@context": "https://schema.org",
+              "@type": "Blog",
+              "name": "Ye Zheng Marketing Insights",
+              "description": "Weekly practitioner intelligence on paid media, GEO optimization, and cross-industry digital marketing strategy.",
+              "url": "https://yezhengmarketing.com/insights/",
+              "author": {{
+                "@type": "Person",
+                "name": "Ye Zheng",
+                "jobTitle": "Digital Marketing Strategist",
+                "url": "https://yezhengmarketing.com"
+              }}
+            }}
+            </script>
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+            <link rel="stylesheet" href="insights-styles.css">
+          </head>
+          <body>
+            <nav class="navbar">
+              <div class="nav-inner">
+                <a href="../index.html" class="nav-logo">YZ</a>
+                <div class="nav-links">
+                  <a href="../index.html#about">About</a>
+                  <a href="../index.html#projects">Projects</a>
+                  <a href="../index.html#skills">Skills</a>
+                  <a href="index.html" class="active">Insights</a>
+                  <a href="https://linkedin.com/in/echozhengmba" target="_blank">Contact</a>
+                </div>
+              </div>
+            </nav>
+
+            <header class="page-header">
+              <div class="page-header-meta">
+                <span class="section-number">06</span>
+                <h1>Insights</h1>
+              </div>
+              <p class="page-header-desc">
+                Weekly intelligence from <strong>market signals, practitioner discourse, and cross-industry client experience</strong>.
+                Covering GEO optimization, paid media, B2B digital growth, and performance strategy &mdash;
+                grounded in real account data across 120+ managed clients.
+              </p>
+            </header>
+
+            <div class="filter-bar">
+              <span class="filter-label">Filter:</span>
+              <button class="filter-tag active" data-filter="all">All</button>
+              <button class="filter-tag" data-filter="geo">GEO / AI Search</button>
+              <button class="filter-tag" data-filter="paid">Paid Media</button>
+              <button class="filter-tag" data-filter="b2b">B2B</button>
+              <button class="filter-tag" data-filter="fmcg">CPG / FMCG</button>
+              <button class="filter-tag" data-filter="analytics">Analytics</button>
+            </div>
+
+            <main class="articles-container">
+              {featured_html}
+              <div class="section-divider">
+                <span class="section-divider-label">All Insights</span>
+                <div class="section-divider-line"></div>
+              </div>
+              {grid_section}
+            </main>
+
+            <footer>
+              <div class="footer-inner">
+                <p>&copy; <span id="year"></span> Ye Zheng. Marketing intelligence grounded in real account data.</p>
+                <a href="../index.html" class="footer-back">&larr; Back to Portfolio</a>
+              </div>
+            </footer>
+
+            <script>
+              document.getElementById('year').textContent = new Date().getFullYear();
+              document.querySelectorAll('.filter-tag').forEach(btn => {{
+                btn.addEventListener('click', function() {{
+                  document.querySelectorAll('.filter-tag').forEach(b => b.classList.remove('active'));
+                  this.classList.add('active');
+                  const filter = this.dataset.filter;
+                  document.querySelectorAll('.article-featured, .article-card').forEach(card => {{
+                    const cat = card.dataset.category || '';
+                    card.style.display = (filter === 'all' || cat.includes(filter)) ? '' : 'none';
+                  }});
+                }});
+              }});
+            </script>
+          </body>
+          </html>"""
+
+          lines = index_html.split('\n')
+          cleaned = '\n'.join(line.lstrip('          ') if line.startswith('          ') else line for line in lines)
+
+          with open(os.path.join(insights_dir, 'index.html'), 'w', encoding='utf-8') as f:
+              f.write(cleaned)
+
+          print(f"Built index with {len(articles)} articles.")
+          PYEOF
+
+      # ── Step 3: Commit everything ─────────────────────────────────────────
+      - name: Commit updated files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add insights/
+          git diff --staged --quiet || git commit -m "Auto-publish from Contentful [skip ci]"
+          git push
